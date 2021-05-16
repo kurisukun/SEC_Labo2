@@ -1,5 +1,2 @@
-sqlite3 db.sqlite "CREATE TABLE person ( id int, name varchar(30), phone varchar(30) );"
-sqlite3 db.sqlite "INSERT INTO person VALUES (1, 'Jim', '123446223');\
-INSERT INTO person VALUES (2, 'Tom', '232124303');\
-INSERT INTO person VALUES (3, 'Bill', '812947283');\
-INSERT INTO person VALUES (4, 'Alice', '351246233');"
+sqlite3 db.sqlite "CREATE TABLE users ( id integer not null primary key, email varchar not null, password varchar not null, two_factors_token varchar null, token_of_reset varchar null, token_date datetime null);"
+sqlite3 db.sqlite "INSERT INTO users VALUES (1, 'chris.barroshenriques.heig@gmail.com', '1234', null, null, null);"
