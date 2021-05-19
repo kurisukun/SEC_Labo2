@@ -1,7 +1,9 @@
-use structopt::StructOpt;
-
 mod db;
 mod validation;
+
+use structopt::StructOpt;
+use validation::validation::{syntatic_validation_username};
+
 
 #[derive(Debug)]
 struct User {
@@ -48,6 +50,10 @@ fn main(){
         println!("Found person {:?}", person.unwrap());
     }
 
-    let opt = Options::from_args();
-    println!("{:?}", opt);
+    let user_options = Options::from_args();
+    println!("{:?}", user_options);
+
+    if !syntatic_validation_username(&user_options.username){
+        println!("Error: credentials not valid!")
+    }
 }
