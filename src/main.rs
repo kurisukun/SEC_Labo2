@@ -2,8 +2,7 @@ mod db;
 mod validation;
 
 use structopt::StructOpt;
-use validation::validation::{syntatic_validation_username};
-
+use validation::validation::{syntatic_validation_password, syntatic_validation_username};
 
 #[derive(Debug)]
 struct User {
@@ -14,9 +13,11 @@ struct User {
 }
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "sec_labo2", about = "SEC Labo2: two-factor authentication program using Google Authenticator")]
-struct Options{
-    
+#[structopt(
+    name = "sec_labo2",
+    about = "SEC Labo2: two-factor authentication program using Google Authenticator"
+)]
+struct Options {
     //arg to login
     #[structopt(short, long, help = "Argument to proceed a login")]
     login: bool,
@@ -30,21 +31,27 @@ struct Options{
     #[structopt(long = "password", default_value = "")]
     password: String,
     //arg to register
-    #[structopt(short, long, help = "Argument to enable/disable the two factors authentication")]
+    #[structopt(
+        short,
+        long,
+        help = "Argument to enable/disable the two factors authentication"
+    )]
     twofactors: bool,
 }
 
-fn main(){
+fn main() {
     let conn = db::database::connect_to_database();
     let mut stmt = conn.prepare("SELECT * FROM users").unwrap();
-    let person_iter = stmt.query_map([], |row| {
-        Ok(User {
-            id: row.get(0)?,
-            email: row.get(1)?,
-            password: row.get(2)?,
-            two_factors: row.get(3)?,
+    let person_iter = stmt
+        .query_map([], |row| {
+            Ok(User {
+                id: row.get(0)?,
+                email: row.get(1)?,
+                password: row.get(2)?,
+                two_factors: row.get(3)?,
+            })
         })
-    }).unwrap();
+        .unwrap();
 
     for person in person_iter {
         println!("Found person {:?}", person.unwrap());
@@ -53,7 +60,7 @@ fn main(){
     let user_options = Options::from_args();
     println!("{:?}", user_options);
 
-    if !syntatic_validation_username(&user_options.username){
+    if !syntatic_validation_username(&user_options.username) && !syntatic_validation_password(&user_options.password) {
         println!("Error: credentials not valid!")
     }
 }
