@@ -1,8 +1,11 @@
 mod db;
 mod validation;
+mod authentication;
 
 use structopt::StructOpt;
+use db::database::Database;
 use validation::validation::{syntatic_validation_password, syntatic_validation_username};
+use authentication::register::register;
 
 #[derive(Debug)]
 struct User {
@@ -18,9 +21,6 @@ struct User {
     about = "SEC Labo2: two-factor authentication program using Google Authenticator"
 )]
 struct Options {
-    //arg to login
-    #[structopt(short, long, help = "Argument to proceed a login")]
-    login: bool,
     //arg to register
     #[structopt(short, long, help = "Argument to proceed a registration")]
     register: bool,
@@ -40,7 +40,8 @@ struct Options {
 }
 
 fn main() {
-    let conn = db::database::connect_to_database();
+    let database = Database::new("db.sqlite");
+    let conn = database.get_conn();
     let mut stmt = conn.prepare("SELECT * FROM users").unwrap();
     let person_iter = stmt
         .query_map([], |row| {
@@ -61,6 +62,15 @@ fn main() {
     println!("{:?}", user_options);
 
     if !syntatic_validation_username(&user_options.username) && !syntatic_validation_password(&user_options.password) {
-        println!("Error: credentials not valid!")
+        println!("Error: credentials not valid!");
+        return; 
     }
+
+    if user_options.register{
+        register();
+    }
+    else{
+
+    }
+
 }

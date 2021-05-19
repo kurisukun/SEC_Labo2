@@ -1,8 +1,21 @@
 use rusqlite::Connection;
 
-pub fn connect_to_database() -> Connection {
-    match Connection::open("db.sqlite") {
-        Ok(connection) => connection,
-        Err(e) => panic!("There was a problem opening the file: {:?}", e),
+pub struct Database{
+    conn: Connection,
+}
+
+
+impl Database {
+    
+    pub fn new(db: &str)-> Self{
+        match Connection::open("db.sqlite") {
+            Ok(conn) => Self{conn},
+            Err(e) => panic!("There was a problem opening the database: {:?}", e),
+        }
+    }
+
+    pub fn get_conn(self) -> Connection{
+        self.conn
     }
 }
+
