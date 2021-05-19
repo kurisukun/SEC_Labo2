@@ -1,8 +1,7 @@
-
-use rusqlite::{Connection, Result};
 use structopt::StructOpt;
 
 mod db;
+mod validation;
 
 #[derive(Debug)]
 struct User {
@@ -23,10 +22,10 @@ struct Options{
     #[structopt(short, long, help = "Argument to proceed a registration")]
     register: bool,
     //arg for username
-    #[structopt(long = "username", default_value = "empty")]
+    #[structopt(long = "username", default_value = "")]
     username: String,
     //arg for user password
-    #[structopt(long = "password", default_value = "empty")]
+    #[structopt(long = "password", default_value = "")]
     password: String,
     //arg to register
     #[structopt(short, long, help = "Argument to enable/disable the two factors authentication")]

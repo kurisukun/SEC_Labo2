@@ -9,3 +9,5 @@ edition = "2018"
 [dependencies]
 rusqlite = "0.25.3"
 structopt = "0.3.21"
+lazy_static = "1.4.0"
+regex = "1.5.4"
