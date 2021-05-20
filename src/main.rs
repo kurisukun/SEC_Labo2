@@ -1,11 +1,12 @@
-mod db;
-mod validation;
 mod authentication;
+mod db;
+mod elements;
+mod validation;
 
-use structopt::StructOpt;
-use db::database;
-use validation::validation::{syntatic_validation_password, syntatic_validation_username};
 use authentication::register::register;
+use db::database;
+use structopt::StructOpt;
+use validation::validation::{syntatic_validation_password, syntatic_validation_username};
 
 #[derive(Debug)]
 struct User {
@@ -13,6 +14,7 @@ struct User {
     email: String,
     password: String,
     two_factors: bool,
+    google_token: String,
 }
 
 #[derive(StructOpt, Debug)]
@@ -36,50 +38,26 @@ struct Options {
         long,
         help = "Argument to enable/disable the two factors authentication"
     )]
-    twofactors: bool,
+    two_factors: bool,
 }
 
 fn main() {
 
-    let conn = database::establish_connection();
-    let test = database::user_exists("chris.barroshenriques@gmail.com").unwrap();
-    println!("TEST: {}", test);
-
-    //let test = database::get_user("chris.barroshenriques.heig@gmail.com");
-    //println!("TEST: {:?}", test);
-
-    let test = database::create_user("chris@gmail.com", "yoyoyo");
-    let mut stmt = conn
-        .prepare("SELECT * FROM users")
-        .unwrap();
-    let person_iter = stmt
-        .query_map([], |row| {
-            Ok(User {
-                id: row.get(0)?,
-                email: row.get(1)?,
-                password: row.get(2)?,
-                two_factors: row.get(3)?,
-            })
-        })
-        .unwrap();
-
-    for person in person_iter {
-        println!("Found person {:?}", person.unwrap());
-    }
-
     let user_options = Options::from_args();
     println!("{:?}", user_options);
 
-    if !syntatic_validation_username(&user_options.username) && !syntatic_validation_password(&user_options.password) {
+    if !syntatic_validation_username(&user_options.username)
+        && !syntatic_validation_password(&user_options.password)
+    {
         println!("Error: credentials not valid!");
-        return; 
+        return;
     }
 
-    if user_options.register{
-        register();
+    if user_options.register {
+        match register(&user_options.username, &user_options.password) {
+            Ok(_) => println!("Registration done! You can now connect to your account"),
+            Err(e) => println!("{}", e),
+        }
+    } else {
     }
-    else{
-
-    }
-
 }

@@ -1,3 +1,1 @@
-pub fn login(){
-    
-}
+pub fn login() {}

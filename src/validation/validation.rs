@@ -117,16 +117,15 @@ mod test {
         assert!(!syntatic_validation_password("a_a?1lpaaa"));
     }
 
-
     #[test]
-    fn secured_passwords(){
+    fn secured_passwords() {
         assert!(is_secure_password("aA1_lpa222$_-^aaaaaa"));
         assert!(is_secure_password("aZ$#3^'la"));
         assert!(is_secure_password("MyNameIsBob123"));
     }
 
     #[test]
-    fn not_secured_password(){
+    fn not_secured_password() {
         //This password respects all criterium for syntax but is not a good password
         assert!(!is_secure_password("Pa$$w0rD"));
         assert!(!is_secure_password("test1234"));
