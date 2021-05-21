@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct User {
     username: String,
     password: String,
@@ -19,5 +19,21 @@ impl User {
             two_factors,
             google_token,
         }
+    }
+
+    pub fn get_username(&self) -> &String{
+        &self.username
+    }
+
+    pub fn get_password(&self) -> &String{
+        &self.password
+    }
+
+    pub fn get_two_factors(&self) -> bool{
+        self.two_factors
+    }
+
+    pub fn get_google_token(&self) -> &String{
+        &self.google_token
     }
 }

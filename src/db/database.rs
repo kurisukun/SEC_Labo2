@@ -1,8 +1,5 @@
-#[path = "../elements/user.rs"]
-pub mod user;
 use rusqlite::{Connection, Error};
-
-use self::user::User;
+use crate::elements::user::User;
 
 pub fn create_table() {
     let conn = establish_connection();

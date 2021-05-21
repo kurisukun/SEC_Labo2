@@ -3,8 +3,9 @@ mod db;
 mod elements;
 mod validation;
 
+use crate::db::database::{drop_table, create_table};
 use authentication::register::register;
-use db::database;
+use authentication::login::login;
 use structopt::StructOpt;
 use validation::validation::{syntatic_validation_password, syntatic_validation_username};
 
@@ -32,22 +33,25 @@ struct Options {
     //arg for user password
     #[structopt(short = "p", long = "password", default_value = "")]
     password: String,
-    //arg to register
+    //arg to enable/disable the two_factors use
     #[structopt(
         short,
         long,
         help = "Argument to enable/disable the two factors authentication"
     )]
     two_factors: bool,
+    #[structopt(short = "g", long = "token", default_value = "")]
+    google_token: String,
 }
 
 fn main() {
 
+    create_table();
     let user_options = Options::from_args();
     println!("{:?}", user_options);
 
     if !syntatic_validation_username(&user_options.username)
-        && !syntatic_validation_password(&user_options.password)
+        || !syntatic_validation_password(&user_options.password)
     {
         println!("Error: credentials not valid!");
         return;
@@ -59,5 +63,12 @@ fn main() {
             Err(e) => println!("{}", e),
         }
     } else {
+
+        match login(&user_options.username, &user_options.password, &user_options.google_token){
+            Ok(connected) => {
+                println!("You are now connected!")
+            },
+            Err(e) => println!("Error: {}", e),
+        }
     }
 }

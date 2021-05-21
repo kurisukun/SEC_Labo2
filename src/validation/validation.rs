@@ -35,6 +35,7 @@ pub fn syntatic_validation_password(password: &str) -> bool {
     }
 
     let matches: Vec<_> = REGEX_PASSWORD.matches(password).into_iter().collect();
+    println!("In password validation: {} == {}", matches.len(), REGEX_PASSWORD.len());
     matches.len() == REGEX_PASSWORD.len()
 }
 
@@ -115,6 +116,8 @@ mod test {
         assert!(!syntatic_validation_password("AA1LPAA?AA"));
         //miss at least one uppercase char
         assert!(!syntatic_validation_password("a_a?1lpaaa"));
+        //miss almost every critera
+        assert!(!syntatic_validation_password("1234"));
     }
 
     #[test]
