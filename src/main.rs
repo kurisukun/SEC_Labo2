@@ -1,22 +1,15 @@
 mod authentication;
 mod db;
 mod elements;
+mod errors;
 mod validation;
 
-use crate::db::database::{drop_table, create_table};
-use authentication::register::register;
-use authentication::login::login;
 use structopt::StructOpt;
-use validation::validation::{syntatic_validation_password, syntatic_validation_username};
+use crate::db::database::create_table;
+use crate::errors::Errors;
+use authentication::{login::login, reset_password::{check_email_duration, send_mail}};
+use authentication::{register::register, two_factors::change_two_factors};
 
-#[derive(Debug)]
-struct User {
-    id: i32,
-    email: String,
-    password: String,
-    two_factors: bool,
-    google_token: String,
-}
 
 #[derive(StructOpt, Debug)]
 #[structopt(
@@ -31,7 +24,12 @@ struct Options {
     #[structopt(short = "u", long = "username", default_value = "")]
     username: String,
     //arg for user password
-    #[structopt(short = "p", long = "password", default_value = "")]
+    #[structopt(
+        short = "p",
+        long = "password",
+        default_value = "",
+        help = "Verifies the syntax of password and given criterium:\n  -the size of the password is between 10-20 chars\n  -has at least one lowercase char\n  -has at least one uppercase char\n  -has at least one special char in the given list: .?!@_-#$%^&*+\n"
+    )]
     password: String,
     //arg to enable/disable the two_factors use
     #[structopt(
@@ -40,34 +38,56 @@ struct Options {
         help = "Argument to enable/disable the two factors authentication"
     )]
     two_factors: bool,
-    #[structopt(short = "g", long = "token", default_value = "")]
-    google_token: String,
+    //arg to enable/disable the two_factors use
+    #[structopt(
+        long,
+        help = "Argument to reset the password"
+    )]
+    reset_password: bool,
 }
 
 fn main() {
-
     create_table();
     let user_options = Options::from_args();
-    println!("{:?}", user_options);
-
-    if !syntatic_validation_username(&user_options.username)
-        || !syntatic_validation_password(&user_options.password)
-    {
-        println!("Error: credentials not valid!");
-        return;
-    }
 
     if user_options.register {
+        println!("### Registration ###");
         match register(&user_options.username, &user_options.password) {
             Ok(_) => println!("Registration done! You can now connect to your account"),
-            Err(e) => println!("{}", e),
+            Err(e) => println!("Error: {}", e),
         }
     } else {
+        println!("### Login ###");
+        match login(
+            &user_options.username,
+            &user_options.password,
+        ) {
+            Ok(user) => {
+                println!("Hi {}, you are now connected!", user.get_username());
 
-        match login(&user_options.username, &user_options.password, &user_options.google_token){
-            Ok(connected) => {
-                println!("You are now connected!")
-            },
+                if user_options.reset_password{
+                    println!("You asked to modify your password");
+                    
+                    if let Err(e) = check_email_duration(){
+                        println!("Error: {}", e);
+                        return;
+                    }
+
+                    
+                }
+
+                if user_options.two_factors {
+                    println!("You asked to modify your two_factors parameter");
+
+                    match change_two_factors(
+                        user.get_username(),
+                        user.get_two_factors(),
+                    ) {
+                        Ok(_) => println!("The usage of two factors has been changed!"),
+                        Err(e) => println!("Error: {}", e),
+                    }
+                }
+            }
             Err(e) => println!("Error: {}", e),
         }
     }

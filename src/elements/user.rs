@@ -21,19 +21,19 @@ impl User {
         }
     }
 
-    pub fn get_username(&self) -> &String{
+    pub fn get_username(&self) -> &String {
         &self.username
     }
 
-    pub fn get_password(&self) -> &String{
+    pub fn get_password(&self) -> &String {
         &self.password
     }
 
-    pub fn get_two_factors(&self) -> bool{
+    pub fn get_two_factors(&self) -> bool {
         self.two_factors
     }
 
-    pub fn get_google_token(&self) -> &String{
+    pub fn get_google_token(&self) -> &String {
         &self.google_token
     }
 }
