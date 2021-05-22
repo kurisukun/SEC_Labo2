@@ -37,7 +37,7 @@ pub fn syntatic_validation_password(password: &str) -> bool {
     matches.len() == REGEX_PASSWORD.len()
 }
 
-/// Verifies the syntax of google token 
+/// Verifies the syntax of google token
 ///
 /// Returns true if the token respectes the given regex, false otherwise
 pub fn syntatic_validation_google_token(token: &str) -> bool {
@@ -141,46 +141,68 @@ mod test {
     }
 
     #[test]
-    fn valid_google_token(){
+    fn valid_google_token() {
         assert!(syntatic_validation_google_token("123456"));
         assert!(syntatic_validation_google_token("111111"));
     }
 
     #[test]
-    fn invalid_google_token_length(){
+    fn invalid_google_token_length() {
         assert!(!syntatic_validation_google_token(""));
         assert!(!syntatic_validation_google_token("12345"));
         assert!(!syntatic_validation_google_token("1234567"));
     }
 
     #[test]
-    fn invalid_google_token_not_only_numbers(){
+    fn invalid_google_token_not_only_numbers() {
         assert!(!syntatic_validation_google_token("1234S6"));
         assert!(!syntatic_validation_google_token("test"));
     }
 
     #[test]
-    fn valid_uuid(){
-        assert!(syntatic_validation_uuid("09f5b52a-cd67-40b8-aead-b26fd04ed611"));
-        assert!(syntatic_validation_uuid("11111111-1111-1111-1111-111111111111"));
-        assert!(syntatic_validation_uuid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"));
+    fn valid_uuid() {
+        assert!(syntatic_validation_uuid(
+            "09f5b52a-cd67-40b8-aead-b26fd04ed611"
+        ));
+        assert!(syntatic_validation_uuid(
+            "11111111-1111-1111-1111-111111111111"
+        ));
+        assert!(syntatic_validation_uuid(
+            "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ));
     }
 
     #[test]
-    fn invalid_uuid_format(){
+    fn invalid_uuid_format() {
         assert!(!syntatic_validation_uuid(""));
-        assert!(!syntatic_validation_uuid("09f5b52a-cd67-40b8-aead12-b26fd04ed6"));
-        assert!(!syntatic_validation_uuid("09f5b52a-cd67-40b8-ae-b26fd04ed61112"));
-        assert!(!syntatic_validation_uuid("09f5b52a-cd67-40-aead-b26fd04ed61112"));
-        assert!(!syntatic_validation_uuid("09f5b52a-cd-40b8-aead-b26fd04ed61112"));
-        assert!(!syntatic_validation_uuid("09f5b5-cd67-40b8-aead-b26fd04ed61112"));
+        assert!(!syntatic_validation_uuid(
+            "09f5b52a-cd67-40b8-aead12-b26fd04ed6"
+        ));
+        assert!(!syntatic_validation_uuid(
+            "09f5b52a-cd67-40b8-ae-b26fd04ed61112"
+        ));
+        assert!(!syntatic_validation_uuid(
+            "09f5b52a-cd67-40-aead-b26fd04ed61112"
+        ));
+        assert!(!syntatic_validation_uuid(
+            "09f5b52a-cd-40b8-aead-b26fd04ed61112"
+        ));
+        assert!(!syntatic_validation_uuid(
+            "09f5b5-cd67-40b8-aead-b26fd04ed61112"
+        ));
     }
 
     #[test]
-    fn invalid_uuid_separator(){
-        assert!(!syntatic_validation_uuid("aaaaaaaa_aaaa_aaaa_aaaa_aaaaaaaaaaaa"));
-        assert!(!syntatic_validation_uuid("aaaaaaaa aaaa aaaa aaaa aaaaaaaaaaaa"));
-        assert!(!syntatic_validation_uuid("aaaaaaaa#aaaa#aaaa#aaaa#aaaaaaaaaaaa"));
+    fn invalid_uuid_separator() {
+        assert!(!syntatic_validation_uuid(
+            "aaaaaaaa_aaaa_aaaa_aaaa_aaaaaaaaaaaa"
+        ));
+        assert!(!syntatic_validation_uuid(
+            "aaaaaaaa aaaa aaaa aaaa aaaaaaaaaaaa"
+        ));
+        assert!(!syntatic_validation_uuid(
+            "aaaaaaaa#aaaa#aaaa#aaaa#aaaaaaaaaaaa"
+        ));
     }
 
     #[test]

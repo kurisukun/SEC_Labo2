@@ -6,7 +6,10 @@ mod validation;
 
 use crate::db::database::create_table;
 use crate::errors::Errors;
-use authentication::{login::login, reset_password::{change_password, check_email_duration}};
+use authentication::{
+    login::login,
+    reset_password::{change_password, check_email_duration},
+};
 use authentication::{register::register, two_factors::change_two_factors};
 use structopt::StructOpt;
 
@@ -66,7 +69,7 @@ fn main() {
                         return;
                     }
 
-                    if let Err(e) = change_password(user.get_username()){
+                    if let Err(e) = change_password(user.get_username()) {
                         println!("Error: {}", e);
                         return;
                     }

@@ -13,7 +13,6 @@ pub fn login(username: &str, password: &str) -> Result<User, Errors> {
 
     let user = result.unwrap();
 
-
     if !argon2::verify_encoded(user.get_password().as_str(), password.as_bytes()).unwrap() {
         return Err(Errors::LoginError);
     }

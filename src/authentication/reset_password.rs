@@ -6,9 +6,11 @@ use read_input::prelude::*;
 use std::time::Instant;
 use uuid::Uuid;
 
-use crate::{db::database::update_user_password, validation::validation::is_secure_password};
-use crate::validation::validation::{syntatic_validation_username, syntatic_validation_uuid, syntatic_validation_password};
+use crate::validation::validation::{
+    syntatic_validation_password, syntatic_validation_username, syntatic_validation_uuid,
+};
 use crate::Errors;
+use crate::{db::database::update_user_password, validation::validation::is_secure_password};
 
 const SMTP_USER: &str = "chris.barroshenriques@gmail.com";
 const SMTP_PASS: &str = "3^VCfVH8R7km%p4D*T^f";
@@ -83,22 +85,22 @@ pub fn change_password(username: &str) -> Result<(), Errors> {
     rand::thread_rng().fill_bytes(&mut salt);
 
     let password: String = input()
-    .repeat_msg("Please enter your new password: ")
-    .add_err_test(
-        |m: &String| syntatic_validation_password(m) && is_secure_password(m),
-        "Error: password is not valid, try again",
-    )
-    .get();
+        .repeat_msg("Please enter your new password: ")
+        .add_err_test(
+            |m: &String| syntatic_validation_password(m) && is_secure_password(m),
+            "Error: password is not valid, try again",
+        )
+        .get();
 
     let again_password: String = input()
-    .repeat_msg("Please enter your new password again : ")
-    .add_err_test(
-        |m: &String| syntatic_validation_password(m) && is_secure_password(m),
-        "Error: password is not valid, try again",
-    )
-    .get();
+        .repeat_msg("Please enter your new password again : ")
+        .add_err_test(
+            |m: &String| syntatic_validation_password(m) && is_secure_password(m),
+            "Error: password is not valid, try again",
+        )
+        .get();
 
-    if password != again_password{
+    if password != again_password {
         return Err(Errors::PasswordDifferentError);
     }
 
@@ -110,6 +112,5 @@ pub fn change_password(username: &str) -> Result<(), Errors> {
         Err(e) => Err(e),
     }
 }
-
 
 //TODO Tests
