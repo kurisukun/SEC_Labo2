@@ -106,7 +106,6 @@ pub fn change_password(username: &str) -> Result<(), Errors> {
 
     let hashed_password = argon2::hash_encoded(password.as_bytes(), &salt, &argon2_config).unwrap();
 
-    println!("Changing password into this: {}", hashed_password);
     match update_user_password(username, &hashed_password) {
         Ok(_) => Ok(()),
         Err(e) => Err(e),
