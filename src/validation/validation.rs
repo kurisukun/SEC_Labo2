@@ -160,6 +160,30 @@ mod test {
     }
 
     #[test]
+    fn valid_uuid(){
+        assert!(syntatic_validation_uuid("09f5b52a-cd67-40b8-aead-b26fd04ed611"));
+        assert!(syntatic_validation_uuid("11111111-1111-1111-1111-111111111111"));
+        assert!(syntatic_validation_uuid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"));
+    }
+
+    #[test]
+    fn invalid_uuid_format(){
+        assert!(!syntatic_validation_uuid(""));
+        assert!(!syntatic_validation_uuid("09f5b52a-cd67-40b8-aead12-b26fd04ed6"));
+        assert!(!syntatic_validation_uuid("09f5b52a-cd67-40b8-ae-b26fd04ed61112"));
+        assert!(!syntatic_validation_uuid("09f5b52a-cd67-40-aead-b26fd04ed61112"));
+        assert!(!syntatic_validation_uuid("09f5b52a-cd-40b8-aead-b26fd04ed61112"));
+        assert!(!syntatic_validation_uuid("09f5b5-cd67-40b8-aead-b26fd04ed61112"));
+    }
+
+    #[test]
+    fn invalid_uuid_separator(){
+        assert!(!syntatic_validation_uuid("aaaaaaaa_aaaa_aaaa_aaaa_aaaaaaaaaaaa"));
+        assert!(!syntatic_validation_uuid("aaaaaaaa aaaa aaaa aaaa aaaaaaaaaaaa"));
+        assert!(!syntatic_validation_uuid("aaaaaaaa#aaaa#aaaa#aaaa#aaaaaaaaaaaa"));
+    }
+
+    #[test]
     fn secured_passwords() {
         assert!(is_secure_password("aA1_lpa222$_-^aaaaaa"));
         assert!(is_secure_password("aZ$#3^'la"));
