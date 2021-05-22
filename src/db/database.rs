@@ -4,6 +4,7 @@ use rusqlite::Connection;
 
 const DB_NAME : &str = "db.sqlite";
 
+/// Creates users table 
 pub fn create_table() {
     let conn = establish_connection();
     conn.execute(
@@ -18,13 +19,20 @@ pub fn create_table() {
     .unwrap();
 }
 
+/// Creates an connection to the database
+///
+/// Outputs the connection or panics if the given database does not exists 
 pub fn establish_connection() -> Connection {
     match Connection::open(DB_NAME) {
         Ok(conn) => conn,
+        //Hence the databse is mandatory for the application, we panic if the db is not found
         Err(e) => panic!("There was a problem opening the database: {:?}", e),
     }
 }
 
+/// Checks if an user exists in the database
+///
+/// Returns Result<bool> if the user exists, a login error (Errors::LoginError) otherwise
 pub fn user_exists(username: &str) -> Result<bool, Errors> {
     let conn = establish_connection();
     let result = conn.prepare("SELECT * FROM users WHERE username=?");
@@ -35,6 +43,10 @@ pub fn user_exists(username: &str) -> Result<bool, Errors> {
     }
 }
 
+/// Get an user in the database
+///
+/// Returns Result<USer> if the user exists and has been got correctly, 
+/// an error (Errors::LoginError or Errors::GetUserError) if the given username does not match with any or the query did not work otherwise
 pub fn get_user(username: &str) -> Result<User, Errors> {
     match user_exists(username) {
         Ok(exists) => {
@@ -62,6 +74,10 @@ pub fn get_user(username: &str) -> Result<User, Errors> {
     }
 }
 
+/// Creates an user in the database
+///
+/// Returns Result<()> if the user is created, 
+/// Result<Errors> (Errors::EmailUsedError, Errors::GetUserError, or Errors::CreateUserError) if the user already exists or the query did not work otherwise
 pub fn create_user(username: &str, password: &str) -> Result<(), Errors> {
     match user_exists(username) {
         Ok(exists) => {
@@ -81,6 +97,10 @@ pub fn create_user(username: &str, password: &str) -> Result<(), Errors> {
     }
 }
 
+/// Updates the secret of a given user and activates its two_factors usage
+///
+/// Returns Result<bool> if the user is correctly updated
+/// Result<Errors> (Errors::UpdateUserError) if the user has not been updated
 pub fn update_user_secret(username: &str, two_factors: bool, secret: &str) -> Result<bool, Errors> {
     let conn = establish_connection();
     let mut two = '0';
@@ -108,6 +128,10 @@ pub fn update_user_secret(username: &str, two_factors: bool, secret: &str) -> Re
     }
 }
 
+/// Updates the password of a given user
+///
+/// Returns Result<bool> if the user is correctly updated
+/// Result<Errors> (Errors::UpdateUserError) if the user has not been updated
 pub fn update_user_password(username: &str, password: &str) -> Result<bool, Errors> {
     let conn = establish_connection();
     let stmt = conn.execute(
@@ -213,7 +237,6 @@ mod test {
         assert_eq!(user_created_result2, Errors::EmailUsedError);
     }
 
-    //TODO test update_user_secret
     #[test]
     fn valid_update_user_secret(){
         let username = "test@test.com";
@@ -239,7 +262,6 @@ mod test {
         assert_eq!(result, Errors::UpdateUserError);
     }
 
-    //TODO test update_user_password
     #[test]
     fn valid_update_user_password(){
         let username = "test@test.com";
