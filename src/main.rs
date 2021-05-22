@@ -4,12 +4,11 @@ mod elements;
 mod errors;
 mod validation;
 
-use structopt::StructOpt;
 use crate::db::database::create_table;
 use crate::errors::Errors;
-use authentication::{login::login, reset_password::{check_email_duration, send_mail}};
+use authentication::{login::login, reset_password::{change_password, check_email_duration}};
 use authentication::{register::register, two_factors::change_two_factors};
-
+use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
 #[structopt(
@@ -39,10 +38,7 @@ struct Options {
     )]
     two_factors: bool,
     //arg to enable/disable the two_factors use
-    #[structopt(
-        long,
-        help = "Argument to reset the password"
-    )]
+    #[structopt(long, help = "Argument to reset the password")]
     reset_password: bool,
 }
 
@@ -58,31 +54,30 @@ fn main() {
         }
     } else {
         println!("### Login ###");
-        match login(
-            &user_options.username,
-            &user_options.password,
-        ) {
+        match login(&user_options.username, &user_options.password) {
             Ok(user) => {
                 println!("Hi {}, you are now connected!", user.get_username());
 
-                if user_options.reset_password{
+                if user_options.reset_password {
                     println!("You asked to modify your password");
-                    
-                    if let Err(e) = check_email_duration(){
+
+                    if let Err(e) = check_email_duration() {
                         println!("Error: {}", e);
                         return;
                     }
 
-                    
+                    if let Err(e) = change_password(user.get_username()){
+                        println!("Error: {}", e);
+                        return;
+                    }
+
+                    println!("Password changed!");
                 }
 
                 if user_options.two_factors {
                     println!("You asked to modify your two_factors parameter");
 
-                    match change_two_factors(
-                        user.get_username(),
-                        user.get_two_factors(),
-                    ) {
+                    match change_two_factors(user.get_username(), user.get_two_factors()) {
                         Ok(_) => println!("The usage of two factors has been changed!"),
                         Err(e) => println!("Error: {}", e),
                     }

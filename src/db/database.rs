@@ -79,11 +79,7 @@ pub fn create_user(username: &str, password: &str) -> Result<(), Errors> {
     }
 }
 
-pub fn update_user_secret(
-    username: &str,
-    two_factors: bool,
-    secret: &str,
-) -> Result<bool, Errors> {
+pub fn update_user_secret(username: &str, two_factors: bool, secret: &str) -> Result<bool, Errors> {
     let conn = establish_connection();
     let mut two = '0';
 
@@ -101,7 +97,23 @@ pub fn update_user_secret(
         Err(e) => {
             println!("{}", e);
             Err(Errors::UpdateUserError)
-        },
+        }
+    }
+}
+
+pub fn update_user_password(username: &str, password: &str) -> Result<bool, Errors> {
+    let conn = establish_connection();
+    let stmt = conn.execute(
+        "UPDATE users SET password = $1 WHERE username = $2",
+        [password, username],
+    );
+
+    match stmt {
+        Ok(_) => Ok(true),
+        Err(e) => {
+            println!("{}", e);
+            Err(Errors::UpdateUserError)
+        }
     }
 }
 

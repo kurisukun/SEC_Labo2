@@ -24,7 +24,6 @@ pub fn login(username: &str, password: &str) -> Result<User, Errors> {
     if user.get_two_factors() && !verify_secret(user.get_google_token().as_str()) {
         return Err(Errors::TokenError);
     }
-    
 
     Ok(user)
 }

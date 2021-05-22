@@ -3,18 +3,19 @@ use regex::Regex;
 use regex::RegexSet;
 use zxcvbn::zxcvbn;
 
-pub fn syntatic_validation_google_token(token: &str) ->bool{
+pub fn syntatic_validation_google_token(token: &str) -> bool {
     lazy_static! {
-
         static ref REGEX_TOKEN: Regex = Regex::new(r"^[0-9]{6}$").unwrap();
     }
     REGEX_TOKEN.is_match(token)
 }
 
-pub fn syntatic_validation_uuid(uuid: &str) -> bool{
+pub fn syntatic_validation_uuid(uuid: &str) -> bool {
     lazy_static! {
-
-        static ref REGEX_UUID: Regex = Regex::new(r"^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$").unwrap();
+        static ref REGEX_UUID: Regex = Regex::new(
+            r"^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$"
+        )
+        .unwrap();
     }
     REGEX_UUID.is_match(uuid)
 }
@@ -24,8 +25,8 @@ pub fn syntatic_validation_uuid(uuid: &str) -> bool{
 /// Returns true if the email respectes the given regex, false otherwise
 pub fn syntatic_validation_username(username: &str) -> bool {
     lazy_static! {
-        
-        static ref REGEX_USERNAME: Regex = Regex::new(r"^(?i)[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$").unwrap();
+        static ref REGEX_USERNAME: Regex =
+            Regex::new(r"^(?i)[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$").unwrap();
     }
     REGEX_USERNAME.is_match(username)
 }
