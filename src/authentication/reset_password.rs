@@ -110,3 +110,6 @@ pub fn change_password(username: &str) -> Result<(), Errors> {
         Err(e) => Err(e),
     }
 }
+
+
+//TODO Tests

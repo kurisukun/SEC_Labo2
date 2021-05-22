@@ -3,23 +3,6 @@ use regex::Regex;
 use regex::RegexSet;
 use zxcvbn::zxcvbn;
 
-pub fn syntatic_validation_google_token(token: &str) -> bool {
-    lazy_static! {
-        static ref REGEX_TOKEN: Regex = Regex::new(r"^[0-9]{6}$").unwrap();
-    }
-    REGEX_TOKEN.is_match(token)
-}
-
-pub fn syntatic_validation_uuid(uuid: &str) -> bool {
-    lazy_static! {
-        static ref REGEX_UUID: Regex = Regex::new(
-            r"^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$"
-        )
-        .unwrap();
-    }
-    REGEX_UUID.is_match(uuid)
-}
-
 /// Verifies the syntax of username (email)
 ///
 /// Returns true if the email respectes the given regex, false otherwise
@@ -52,6 +35,29 @@ pub fn syntatic_validation_password(password: &str) -> bool {
 
     let matches: Vec<_> = REGEX_PASSWORD.matches(password).into_iter().collect();
     matches.len() == REGEX_PASSWORD.len()
+}
+
+/// Verifies the syntax of google token 
+///
+/// Returns true if the token respectes the given regex, false otherwise
+pub fn syntatic_validation_google_token(token: &str) -> bool {
+    lazy_static! {
+        static ref REGEX_TOKEN: Regex = Regex::new(r"^(\d){6}$").unwrap();
+    }
+    REGEX_TOKEN.is_match(token)
+}
+
+/// Verifies the syntax of uuid
+///
+/// Returns true if the uuid respectes the given regex, false otherwise
+pub fn syntatic_validation_uuid(uuid: &str) -> bool {
+    lazy_static! {
+        static ref REGEX_UUID: Regex = Regex::new(
+            r"^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$"
+        )
+        .unwrap();
+    }
+    REGEX_UUID.is_match(uuid)
 }
 
 /// Verfies given password is secure enough based on zxcvbn library. Any password with a score less than 3 is considered weak
@@ -132,6 +138,25 @@ mod test {
         assert!(!syntatic_validation_password("a_a?1lpaaa"));
         //miss almost every critera
         assert!(!syntatic_validation_password("1234"));
+    }
+
+    #[test]
+    fn valid_google_token(){
+        assert!(syntatic_validation_google_token("123456"));
+        assert!(syntatic_validation_google_token("111111"));
+    }
+
+    #[test]
+    fn invalid_google_token_length(){
+        assert!(!syntatic_validation_google_token(""));
+        assert!(!syntatic_validation_google_token("12345"));
+        assert!(!syntatic_validation_google_token("1234567"));
+    }
+
+    #[test]
+    fn invalid_google_token_not_only_numbers(){
+        assert!(!syntatic_validation_google_token("1234S6"));
+        assert!(!syntatic_validation_google_token("test"));
     }
 
     #[test]
