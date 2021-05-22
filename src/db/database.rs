@@ -29,7 +29,7 @@ pub fn user_exists(username: &str) -> Result<bool, Errors> {
 
     match result {
         Ok(mut stmt) => Ok(stmt.exists(rusqlite::params![username]).unwrap()),
-        Err(_) => Err(Errors::UserExistsError),
+        Err(_) => Err(Errors::LoginError),
     }
 }
 
@@ -54,9 +54,9 @@ pub fn get_user(username: &str) -> Result<User, Errors> {
                     Err(_) => return Err(Errors::GetUserError),
                 }
             }
-            Err(Errors::UserExistsError)
+            Err(Errors::LoginError)
         }
-        Err(_) => Err(Errors::UserExistsError),
+        Err(_) => Err(Errors::LoginError),
     }
 }
 
@@ -153,7 +153,7 @@ mod test {
         let username = "test@test.com";
         let error = get_user(username);
         println!("{:?}", error);
-        assert_eq!(error.unwrap_err(), Errors::UserExistsError);
+        assert_eq!(error.unwrap_err(), Errors::LoginError);
     }
 
     #[test]

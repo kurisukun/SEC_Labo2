@@ -29,11 +29,6 @@ pub fn check_email_duration() -> Result<(), Errors> {
     if !send_mail(&email, &token) {
         return Err(Errors::EmailNotSentError);
     }
-    println!(
-        "An email has been sent to the address: {} \n
-    Please enter your generated token for password reset: ",
-        email
-    );
 
     let input: String = input()
         .repeat_msg("Please enter your generated token for password reset: ")
@@ -95,8 +90,21 @@ pub fn change_password(username: &str) -> Result<(), Errors> {
     )
     .get();
 
+    let again_password: String = input()
+    .repeat_msg("Please enter your new password again : ")
+    .add_err_test(
+        |m: &String| syntatic_validation_password(m) && is_secure_password(m),
+        "Error: password is not valid, try again",
+    )
+    .get();
+
+    if password != again_password{
+        return Err(Errors::PasswordDifferentError);
+    }
+
     let hashed_password = argon2::hash_encoded(password.as_bytes(), &salt, &argon2_config).unwrap();
 
+    println!("Changing password into this: {}", hashed_password);
     match update_user_password(username, &hashed_password) {
         Ok(_) => Ok(()),
         Err(e) => Err(e),

@@ -5,7 +5,7 @@ use strum_macros;
 
 #[derive(PartialEq, Debug, strum_macros::EnumMessage)]
 pub enum Errors {
-    #[strum(message = "Error: Username/password incorrect")]
+    #[strum(message = "Username/password incorrect")]
     LoginError,
     #[strum(message = "Token incorrect")]
     TokenError,
@@ -23,14 +23,14 @@ pub enum Errors {
     GetUserError,
     #[strum(message = "Something went wrong with user update")]
     UpdateUserError,
-    #[strum(message = "Something went wrong when checking if user exists")]
-    UserExistsError,
     #[strum(message = "Email for password reset has not been sent")]
     EmailNotSentError,
     #[strum(message = "Token for password reset is not valid anymore")]
     EmailTimeoutError,
     #[strum(message = "Token for password reset is wrong")]
     EmailWrongToken,
+    #[strum(message = "The two given passwords are different! Cancelling operation")]
+    PasswordDifferentError,
 }
 
 impl fmt::Display for Errors {

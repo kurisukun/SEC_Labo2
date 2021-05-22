@@ -8,7 +8,7 @@ pub fn verify_secret(secret: &str) -> bool {
     let google_auth = GoogleAuthenticator::new();
 
     let input_token: String = input()
-        .repeat_msg("Please enter your generated token: ")
+        .repeat_msg("Please enter your two factors authentication token: ")
         .add_err_test(
             |m: &String| syntatic_validation_google_token(m),
             "Error: the format is not respected (only 6 numbers) ",

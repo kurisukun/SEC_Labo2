@@ -59,7 +59,6 @@ pub fn syntatic_validation_password(password: &str) -> bool {
 /// Returns true if the password is secure enough, false otherwise
 pub fn is_secure_password(password: &str) -> bool {
     let estimate = zxcvbn(password, &[]).unwrap();
-    println!("estimation: {}", estimate.score());
     estimate.score() >= 3
 }
 
