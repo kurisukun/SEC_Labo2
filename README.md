@@ -8,7 +8,9 @@
 
 ### Setup
 
-No particular setup is needed, the file db.sqlite is automatically created when we launch the app.
+No particular setup is needed, the file db.sqlite is automatically created when we launch the app. Obviously, you will first need to register at least one time to entirely test it.
+
+One thing, if you want to use the reset password feature with the email, you need to put your credentials in reset_password.rs (SMTP_USER and SMTP_PASS). 
 
 
 
@@ -106,5 +108,22 @@ This will output a link which will display a QR code which can be used and scann
 
 
 
+### Tests
+
+It happends that some tests that have use of the database fail, it seems the tests are done too quickly for the database to handle it correctly.
+
+For this reason, the script *tests.sh* is provided and launches every pool of tests located in their respective test module. To launch it, simply: 
+
+```bash
+./test.sh
+```
 
 
+
+Every tests using Google Authenticator has not been done since we would have to mock the functions needed. Same for the ones that test the email feature.
+
+
+
+
+
+**Bonus done:** Database SQLite , QR Code with Google Authenticator, Command Line Interface and sending an email for the password reset
