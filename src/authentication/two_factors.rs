@@ -4,6 +4,9 @@ use crate::Errors;
 use google_authenticator::{ErrorCorrectionLevel, GoogleAuthenticator};
 use read_input::prelude::*;
 
+/// Verifies the given secret google token is valid
+///
+/// Returns true if the token is valid, false otherwise
 pub fn verify_secret(secret: &str) -> bool {
     let google_auth = GoogleAuthenticator::new();
 
@@ -18,6 +21,10 @@ pub fn verify_secret(secret: &str) -> bool {
     google_auth.verify_code(secret, input_token.as_str(), 0, 0)
 }
 
+/// Changes the value of the usage of the two factors authentication
+/// If the user has an 2fa set, the function disables it, otherwise it activates it
+///
+/// Returns Result<bool> if the parameter has been correctly changed, Result<Error> otherwise
 pub fn change_two_factors(username: &str, two_factors_is_enabled: bool) -> Result<bool, Errors> {
     if two_factors_is_enabled {
         return disable_two_factors(username);
@@ -26,11 +33,17 @@ pub fn change_two_factors(username: &str, two_factors_is_enabled: bool) -> Resul
     enable_two_factors(username)
 }
 
+/// Generated a secret for the two factors authentication
+///
+/// Returns the secret
 fn gen_secret() -> String{
     let google_auth = GoogleAuthenticator::new();
     google_auth.create_secret(32)
 }
 
+/// Enables the two factors authentication
+///
+/// Returns Result<bool> if the change has been done, Result<Errors> otherwise
 fn enable_two_factors(username: &str) -> Result<bool, Errors> {
     println!("\n### Enabling the two factors ###");
 
@@ -49,8 +62,12 @@ fn enable_two_factors(username: &str) -> Result<bool, Errors> {
     update_user_secret(username, true, secret.as_str())
 }
 
+/// Disables the two factors authentication
+///
+/// Returns Result<bool> if the change has been done, Result<Errors> otherwise
 fn disable_two_factors(username: &str) -> Result<bool, Errors> {
     println!("\n### Disabling the two factors ###");
+    // By default, the user has the two factors disabled and the secret is a null value
     update_user_secret(username, false, "")
 }
 

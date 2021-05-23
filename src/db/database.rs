@@ -45,7 +45,7 @@ pub fn user_exists(username: &str) -> Result<bool, Errors> {
 
 /// Get an user in the database
 ///
-/// Returns Result<USer> if the user exists and has been got correctly, 
+/// Returns Result<User> if the user exists and has been got correctly, 
 /// an error (Errors::LoginError or Errors::GetUserError) if the given username does not match with any or the query did not work otherwise
 pub fn get_user(username: &str) -> Result<User, Errors> {
     match user_exists(username) {
@@ -74,7 +74,7 @@ pub fn get_user(username: &str) -> Result<User, Errors> {
     }
 }
 
-/// Creates an user in the database
+/// Creates an user in the database (By default, two factors disabled and the secret is a null value)
 ///
 /// Returns Result<()> if the user is created, 
 /// Result<Errors> (Errors::EmailUsedError, Errors::GetUserError, or Errors::CreateUserError) if the user already exists or the query did not work otherwise
@@ -83,6 +83,7 @@ pub fn create_user(username: &str, password: &str) -> Result<(), Errors> {
         Ok(exists) => {
             if !exists {
                 let conn = establish_connection();
+                
                 let stmt = conn
                     .execute("INSERT INTO users (username, password, two_factors, secret) VALUES (?1, ?2, false, '')", [username, password]);
 

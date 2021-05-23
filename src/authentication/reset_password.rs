@@ -12,11 +12,15 @@ use crate::validation::validation::{
 use crate::Errors;
 use crate::{db::database::update_user_password, validation::validation::is_secure_password};
 
-const SMTP_USER: &str = "chris.barroshenriques@gmail.com";
-const SMTP_PASS: &str = "3^VCfVH8R7km%p4D*T^f";
+const SMTP_USER: &str = "YOUR EMAIL HERE";
+const SMTP_PASS: &str = "YOUR PASSWORD HERE";
 const SMTP_SERV: &str = "smtp.googlemail.com";
 const MAIL_FROM: &str = "Chris Barros Henriques <chris.barroshenriques@gmail.com>";
 
+
+/// Verifies that the user has taken less than 15 minutes to enter the reset token
+///
+/// Returns Result<()> if the duration is lower, Result<Errors> otherwise
 pub fn check_email_duration() -> Result<(), Errors> {
     const MAX_TIME_SECS: u64 = 15 * 60;
 
@@ -51,6 +55,10 @@ pub fn check_email_duration() -> Result<(), Errors> {
     Ok(())
 }
 
+
+/// Send by email the token for reseting the password of the account
+///
+/// Returns true of the mail has been sent, false otherwise
 fn send_mail(dst: &str, message: &str) -> bool {
     let email = Message::builder()
         .from(MAIL_FROM.parse().unwrap())
@@ -79,6 +87,10 @@ fn send_mail(dst: &str, message: &str) -> bool {
     true
 }
 
+/// Changes the password of the user after reset token has been validated
+/// The user will be asked to enter his password twice to do so and have to be the same
+///
+/// Returns Result<()> if the password has been changed, Result<Errors> otherwise
 pub fn change_password(username: &str) -> Result<(), Errors> {
     let argon2_config = Config::default();
     let mut salt = [0u8; 32];
@@ -111,5 +123,3 @@ pub fn change_password(username: &str) -> Result<(), Errors> {
         Err(e) => Err(e),
     }
 }
-
-//TODO Tests
