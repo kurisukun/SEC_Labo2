@@ -110,19 +110,11 @@ This will output a link which will display a QR code which can be used and scann
 
 ### Tests
 
-It happends that some tests that have use of the database fail, it seems the tests are done too quickly for the database to handle it correctly.
-
-For this reason, the script *tests.sh* is provided and launches every pool of tests located in their respective test module. To launch it, simply: 
-
-```bash
-./test.sh
-```
+It happends that some tests that have use of the database fail, it seems the tests are done too quickly for the database to handle it correctly. So to launch the tests, it's advisable to run them one by one.
 
 
 
 Every tests using Google Authenticator has not been done since we would have to mock the functions needed. Same for the ones that test the email feature.
-
-
 
 
 
