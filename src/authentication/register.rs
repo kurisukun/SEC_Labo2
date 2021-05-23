@@ -7,7 +7,6 @@ use crate::{
 use argon2::Config;
 use rand::prelude::*;
 
-
 /// Proceeds to the registration of the user. The username (email) must not be already taken and
 /// bother username and password have to respect a certain format (see validation.rs for more info)
 ///
@@ -41,7 +40,7 @@ pub fn register(username: &str, password: &str) -> Result<(), Errors> {
 mod test {
 
     use super::*;
-    use crate::{db::database::{establish_connection, create_table}};
+    use crate::db::database::{create_table, establish_connection};
 
     fn drop_table() {
         let conn = establish_connection();
@@ -49,7 +48,7 @@ mod test {
     }
 
     #[test]
-    fn valid_register(){
+    fn valid_register() {
         drop_table();
         create_table();
         let username = "test@test.com";
@@ -59,7 +58,7 @@ mod test {
     }
 
     #[test]
-    fn invalid_register(){
+    fn invalid_register() {
         drop_table();
         create_table();
         let username = "test@test.com";

@@ -17,7 +17,6 @@ const SMTP_PASS: &str = "YOUR PASSWORD HERE";
 const SMTP_SERV: &str = "smtp.googlemail.com";
 const MAIL_FROM: &str = "Chris Barros Henriques <chris.barroshenriques@gmail.com>";
 
-
 /// Verifies that the user has taken less than 15 minutes to enter the reset token
 ///
 /// Returns Result<()> if the duration is lower, Result<Errors> otherwise
@@ -54,7 +53,6 @@ pub fn check_email_duration() -> Result<(), Errors> {
 
     Ok(())
 }
-
 
 /// Send by email the token for reseting the password of the account
 ///

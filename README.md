@@ -14,32 +14,15 @@ One thing, if you want to use the reset password feature with the email, you nee
 
 
 
+### Architecture
+
+Every time an user is added to the database, his password is hashed using argon2. 
+
+The lab is uses on [StructOpt](https://github.com/TeXitoi/structopt) to have a CLI app. 
+
+
+
 ### Usage
-
-```
-./sec_labo2 -h
-sec_labo2 0.1.0
-SEC Labo2: two-factor authentication program using Google Authenticator
-
-USAGE:
-    sec_labo2 [FLAGS] [OPTIONS]
-
-FLAGS:
-    -h, --help              Prints help information
-    -r, --register          Argument to proceed a registration
-        --reset-password    Argument to reset the password
-    -t, --two-factors       Argument to enable/disable the two factors authentication
-    -V, --version           Prints version information
-
-OPTIONS:
-    -p, --password <password>    Verifies the syntax of password and given criterium:
-                                   -the size of the password is between 10-20 chars
-                                   -has at least one lowercase char
-                                   -has at least one uppercase char
-                                   -has at least one special char in the given list: .?!@_-#$%^&*+
-                                  [default: ]
-    -u, --username <username>     [default: ]
-```
 
 
 
@@ -104,6 +87,35 @@ This will output a link which will display a QR code which can be used and scann
 
 ```bash
 ./sec_labo2 -u chris.barroshenriques.heig@gmail.com -p aA1_lpa23B --reset_password
+```
+
+
+
+**Help:**
+
+```
+./sec_labo2 -h
+sec_labo2 0.1.0
+SEC Labo2: two-factor authentication program using Google Authenticator
+
+USAGE:
+    sec_labo2 [FLAGS] [OPTIONS]
+
+FLAGS:
+    -h, --help              Prints help information
+    -r, --register          Argument to proceed a registration
+        --reset-password    Argument to reset the password
+    -t, --two-factors       Argument to enable/disable the two factors authentication
+    -V, --version           Prints version information
+
+OPTIONS:
+    -p, --password <password>    Verifies the syntax of password and given criterium:
+                                   -the size of the password is between 10-20 chars
+                                   -has at least one lowercase char
+                                   -has at least one uppercase char
+                                   -has at least one special char in the given list: .?!@_-#$%^&*+
+                                  [default: ]
+    -u, --username <username>     [default: ]
 ```
 
 

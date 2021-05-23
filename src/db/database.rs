@@ -2,9 +2,9 @@ use crate::elements::user::User;
 use crate::errors::Errors;
 use rusqlite::Connection;
 
-const DB_NAME : &str = "db.sqlite";
+const DB_NAME: &str = "db.sqlite";
 
-/// Creates users table 
+/// Creates users table
 pub fn create_table() {
     let conn = establish_connection();
     conn.execute(
@@ -21,7 +21,7 @@ pub fn create_table() {
 
 /// Creates an connection to the database
 ///
-/// Outputs the connection or panics if the given database does not exists 
+/// Outputs the connection or panics if the given database does not exists
 pub fn establish_connection() -> Connection {
     match Connection::open(DB_NAME) {
         Ok(conn) => conn,
@@ -45,7 +45,7 @@ pub fn user_exists(username: &str) -> Result<bool, Errors> {
 
 /// Get an user in the database
 ///
-/// Returns Result<User> if the user exists and has been got correctly, 
+/// Returns Result<User> if the user exists and has been got correctly,
 /// an error (Errors::LoginError or Errors::GetUserError) if the given username does not match with any or the query did not work otherwise
 pub fn get_user(username: &str) -> Result<User, Errors> {
     match user_exists(username) {
@@ -76,14 +76,14 @@ pub fn get_user(username: &str) -> Result<User, Errors> {
 
 /// Creates an user in the database (By default, two factors disabled and the secret is a null value)
 ///
-/// Returns Result<()> if the user is created, 
+/// Returns Result<()> if the user is created,
 /// Result<Errors> (Errors::EmailUsedError, Errors::GetUserError, or Errors::CreateUserError) if the user already exists or the query did not work otherwise
 pub fn create_user(username: &str, password: &str) -> Result<(), Errors> {
     match user_exists(username) {
         Ok(exists) => {
             if !exists {
                 let conn = establish_connection();
-                
+
                 let stmt = conn
                     .execute("INSERT INTO users (username, password, two_factors, secret) VALUES (?1, ?2, false, '')", [username, password]);
 
@@ -117,11 +117,11 @@ pub fn update_user_secret(username: &str, two_factors: bool, secret: &str) -> Re
 
     match stmt {
         Ok(size) => {
-            if size == 0{
+            if size == 0 {
                 return Err(Errors::UpdateUserError);
             }
             Ok(true)
-        },
+        }
         Err(e) => {
             println!("{}", e);
             Err(Errors::UpdateUserError)
@@ -142,11 +142,11 @@ pub fn update_user_password(username: &str, password: &str) -> Result<bool, Erro
 
     match stmt {
         Ok(size) => {
-            if size == 0{
+            if size == 0 {
                 return Err(Errors::UpdateUserError);
             }
             Ok(true)
-        },
+        }
         Err(e) => {
             println!("{}", e);
             Err(Errors::UpdateUserError)
@@ -164,7 +164,7 @@ mod test {
         conn.execute("DROP TABLE users", []).unwrap();
     }
 
-    fn create_user_for_tests(username: &str, password: &str){
+    fn create_user_for_tests(username: &str, password: &str) {
         drop_table();
         create_table();
         let _result = create_user(username, password);
@@ -215,7 +215,7 @@ mod test {
         assert_eq!(exists, false);
     }
     #[test]
-    fn valid_create_user(){
+    fn valid_create_user() {
         drop_table();
         create_table();
         let username = "test@test.com";
@@ -223,11 +223,19 @@ mod test {
         let user_created_result = create_user(username, password).unwrap();
         assert_eq!(user_created_result, ());
         let user = get_user(username).unwrap();
-        assert_eq!(user, User::new(username.to_string(), password.to_string(), false, "".to_string()));
+        assert_eq!(
+            user,
+            User::new(
+                username.to_string(),
+                password.to_string(),
+                false,
+                "".to_string()
+            )
+        );
     }
 
     #[test]
-    fn invalid_create_user(){
+    fn invalid_create_user() {
         drop_table();
         create_table();
         let username = "test@test.com";
@@ -239,7 +247,7 @@ mod test {
     }
 
     #[test]
-    fn valid_update_user_secret(){
+    fn valid_update_user_secret() {
         let username = "test@test.com";
         let password = "1234";
         create_user_for_tests(username, password);
@@ -248,11 +256,19 @@ mod test {
         let result = update_user_secret(username, two_factors, secret).unwrap();
         assert_eq!(result, true);
         let user = get_user(username).unwrap();
-        assert_eq!(user, User::new(username.to_string(), password.to_string(), two_factors, secret.to_string()));
+        assert_eq!(
+            user,
+            User::new(
+                username.to_string(),
+                password.to_string(),
+                two_factors,
+                secret.to_string()
+            )
+        );
     }
 
     #[test]
-    fn invalid_update_user_secret(){
+    fn invalid_update_user_secret() {
         drop_table();
         create_table();
         let username = "test@test.com";
@@ -264,7 +280,7 @@ mod test {
     }
 
     #[test]
-    fn valid_update_user_password(){
+    fn valid_update_user_password() {
         let username = "test@test.com";
         let password = "1234";
         create_user_for_tests(username, password);
@@ -273,11 +289,19 @@ mod test {
         let result = update_user_password(username, new_password).unwrap();
         assert_eq!(result, true);
         let user = get_user(username).unwrap();
-        assert_eq!(user, User::new(username.to_string(), new_password.to_string(), false, "".to_string()));
+        assert_eq!(
+            user,
+            User::new(
+                username.to_string(),
+                new_password.to_string(),
+                false,
+                "".to_string()
+            )
+        );
     }
 
     #[test]
-    fn invalid_update_user_password(){
+    fn invalid_update_user_password() {
         drop_table();
         create_table();
         let username = "test@test.com";

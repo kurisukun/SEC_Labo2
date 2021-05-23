@@ -36,7 +36,7 @@ pub fn change_two_factors(username: &str, two_factors_is_enabled: bool) -> Resul
 /// Generated a secret for the two factors authentication
 ///
 /// Returns the secret
-fn gen_secret() -> String{
+fn gen_secret() -> String {
     let google_auth = GoogleAuthenticator::new();
     google_auth.create_secret(32)
 }
@@ -75,37 +75,35 @@ fn disable_two_factors(username: &str) -> Result<bool, Errors> {
 mod test {
 
     use super::*;
-    use crate::db::database::{establish_connection, create_table, create_user};
-
+    use crate::db::database::{create_table, create_user, establish_connection};
 
     fn drop_table() {
         let conn = establish_connection();
         conn.execute("DROP TABLE users", []).unwrap();
     }
 
-
-    fn create_user_for_tests(username: &str, password: &str){
+    fn create_user_for_tests(username: &str, password: &str) {
         drop_table();
         create_table();
         let _result = create_user(username, password);
     }
 
     #[test]
-    fn valid_gen_secret(){
+    fn valid_gen_secret() {
         let secret = gen_secret();
         assert_eq!(secret.len(), 32)
     }
 
     #[test]
-    fn invalid_gen_secret(){
+    fn invalid_gen_secret() {
         let secret = gen_secret();
         assert_ne!(secret.len(), 0);
         assert_ne!(secret.len(), 33);
-        assert_ne!(secret.len(), 31);        
+        assert_ne!(secret.len(), 31);
     }
 
     #[test]
-    fn valid_diable_two_factors(){
+    fn valid_diable_two_factors() {
         let username = "test@test.com";
         let password = "1234";
         let two_factors = false;
@@ -116,5 +114,4 @@ mod test {
 
         assert_eq!(disabled, true);
     }
-
 }
